@@ -1,0 +1,260 @@
+{
+  "description": "NodePool is the Schema for the nodepools API",
+  "properties": {
+    "apiVersion": {
+      "description": "APIVersion defines the versioned schema of this representation of an object. Servers should convert recognized schemas to the latest internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources",
+      "type": "string"
+    },
+    "kind": {
+      "description": "Kind is a string value representing the REST resource this object represents. Servers may infer this from the endpoint the client submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds",
+      "type": "string"
+    },
+    "metadata": {
+      "type": "object"
+    },
+    "spec": {
+      "description": "NodePoolSpec defines the desired state of NodePool",
+      "properties": {
+        "antiAffinity": {
+          "description": "Represents whether the pool should deploy instances exclusively on different hypervisors.",
+          "nullable": true,
+          "type": "boolean"
+        },
+        "autoscale": {
+          "description": "Represents whether the pool should be autoscaled.",
+          "nullable": true,
+          "type": "boolean"
+        },
+        "autoscaling": {
+          "description": "Represents the autoscaling customization of a node pool.",
+          "nullable": true,
+          "properties": {
+            "scaleDownUnneededTimeSeconds": {
+              "description": "Represents how long a node should be unneeded before it is eligible for scale down.",
+              "format": "int32",
+              "minimum": 0,
+              "nullable": true,
+              "type": "integer"
+            },
+            "scaleDownUnreadyTimeSeconds": {
+              "description": "Represents how long an unready node should be unneeded before it is eligible for scale down.",
+              "format": "int32",
+              "minimum": 0,
+              "nullable": true,
+              "type": "integer"
+            },
+            "scaleDownUtilizationThreshold": {
+              "description": "Represents the ratio of used resources (CPU & RAM) over allocatable resources below which a node is eligible for scale down Kubebuilder does not handle float, this must be a string.",
+              "nullable": true,
+              "type": "string"
+            }
+          },
+          "type": "object",
+          "additionalProperties": false
+        },
+        "desiredNodes": {
+          "description": "Represents the number of nodes wanted in the pool.",
+          "format": "int32",
+          "maximum": 999,
+          "minimum": 0,
+          "type": "integer"
+        },
+        "flavor": {
+          "description": "Represents the node flavors wanted in the pool.",
+          "type": "string"
+        },
+        "maxNodes": {
+          "description": "Represents the maximum number of nodes which should be present in the pool.",
+          "format": "int32",
+          "maximum": 999,
+          "minimum": 0,
+          "nullable": true,
+          "type": "integer"
+        },
+        "minNodes": {
+          "description": "Represents the minimum number of nodes which should be present in the pool.",
+          "format": "int32",
+          "maximum": 100,
+          "minimum": 0,
+          "nullable": true,
+          "type": "integer"
+        },
+        "monthlyBilled": {
+          "description": "Represents the billing type of the pool. False means that the pool is hourly-billed.",
+          "nullable": true,
+          "type": "boolean"
+        },
+        "template": {
+          "description": "Template describes the configuration of the nodes in the pool. On change, it will be applied to existing and future nodes.",
+          "nullable": true,
+          "properties": {
+            "metadata": {
+              "description": "Standard object's metadata.",
+              "properties": {
+                "annotations": {
+                  "additionalProperties": {
+                    "type": "string"
+                  },
+                  "description": "Annotations is an unstructured key value map stored with a resource that may be set by external tools to store and retrieve arbitrary metadata. They are not queryable and should be preserved when modifying objects. More info: http://kubernetes.io/docs/user-guide/annotations",
+                  "type": "object"
+                },
+                "finalizers": {
+                  "description": "Must be empty before the object is deleted from the registry. Each entry is an identifier for the responsible component that will remove the entry from the list. If the deletionTimestamp of the object is non-nil, entries in this list can only be removed.",
+                  "items": {
+                    "type": "string"
+                  },
+                  "type": "array"
+                },
+                "labels": {
+                  "additionalProperties": {
+                    "type": "string"
+                  },
+                  "description": "Map of string keys and values that can be used to organize and categorize (scope and select) objects. May match selectors of replication controllers and services. More info: http://kubernetes.io/docs/user-guide/labels",
+                  "type": "object"
+                }
+              },
+              "required": [
+                "annotations",
+                "finalizers",
+                "labels"
+              ],
+              "type": "object",
+              "additionalProperties": false
+            },
+            "spec": {
+              "description": "Specification of the desired behavior of the node.",
+              "properties": {
+                "taints": {
+                  "description": "If specified, the node's taints.",
+                  "items": {
+                    "description": "The node this Taint is attached to has the \"effect\" on any pod that does not tolerate the Taint.",
+                    "properties": {
+                      "effect": {
+                        "description": "Required. The effect of the taint on pods that do not tolerate the taint. Valid effects are NoSchedule, PreferNoSchedule and NoExecute.",
+                        "type": "string"
+                      },
+                      "key": {
+                        "description": "Required. The taint key to be applied to a node.",
+                        "type": "string"
+                      },
+                      "timeAdded": {
+                        "description": "TimeAdded represents the time at which the taint was added. It is only written for NoExecute taints.",
+                        "format": "date-time",
+                        "type": "string"
+                      },
+                      "value": {
+                        "description": "The taint value corresponding to the taint key.",
+                        "type": "string"
+                      }
+                    },
+                    "required": [
+                      "effect",
+                      "key"
+                    ],
+                    "type": "object",
+                    "additionalProperties": false
+                  },
+                  "type": "array"
+                },
+                "unschedulable": {
+                  "description": "Unschedulable controls node schedulability of new pods. By default, node is schedulable. More info: https://kubernetes.io/docs/concepts/nodes/node/#manual-node-administration",
+                  "type": "boolean"
+                }
+              },
+              "required": [
+                "taints",
+                "unschedulable"
+              ],
+              "type": "object",
+              "additionalProperties": false
+            }
+          },
+          "required": [
+            "metadata",
+            "spec"
+          ],
+          "type": "object",
+          "additionalProperties": false
+        }
+      },
+      "required": [
+        "flavor"
+      ],
+      "type": "object",
+      "additionalProperties": false
+    },
+    "status": {
+      "description": "NodePoolStatus defines the observed state of NodePool",
+      "properties": {
+        "availableNodes": {
+          "description": "Represents the number of available nodes ready to be used in the pool.",
+          "format": "int32",
+          "nullable": true,
+          "type": "integer"
+        },
+        "conditions": {
+          "description": "Represents the latest available observations of a nodepool current state.",
+          "items": {
+            "description": "NodePoolCondition defines the latest observations of a nodepool state",
+            "properties": {
+              "lastTransitionTime": {
+                "description": "Last time the condition transitioned from one status to another.",
+                "format": "date-time",
+                "type": "string"
+              },
+              "lastUpdateTime": {
+                "description": "The last time this condition was updated.",
+                "format": "date-time",
+                "type": "string"
+              },
+              "message": {
+                "description": "A human readable message indicating details about the transition.",
+                "type": "string"
+              },
+              "reason": {
+                "description": "The reason for the condition's last transition.",
+                "type": "string"
+              },
+              "status": {
+                "description": "Status of the condition, one of True, False, Unknown.",
+                "type": "string"
+              },
+              "type": {
+                "description": "Type of nodepool condition.",
+                "type": "string"
+              }
+            },
+            "required": [
+              "reason",
+              "status",
+              "type"
+            ],
+            "type": "object",
+            "additionalProperties": false
+          },
+          "type": "array"
+        },
+        "currentNodes": {
+          "description": "Represents the number of created nodes in the pool (all status merged).",
+          "format": "int32",
+          "nullable": true,
+          "type": "integer"
+        },
+        "observedGeneration": {
+          "description": "Represents the latest generation value of the object (is incremented for all changed except for metadata and statuses)",
+          "format": "int64",
+          "type": "integer"
+        },
+        "upToDateNodes": {
+          "description": "Represents number of nodes with latest version installed in the pool.",
+          "format": "int32",
+          "nullable": true,
+          "type": "integer"
+        }
+      },
+      "type": "object",
+      "additionalProperties": false
+    }
+  },
+  "type": "object"
+}
